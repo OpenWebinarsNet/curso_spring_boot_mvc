@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<title>SecondHandMarket</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+<link rel="stylesheet" href="../../../static/css/styles.css"
+	th:href="@{/css/styles.css}">
+
+</head>
+<body>
+
+	<div class="jumbotron">
+		<div class="container text-center">
+			<h1>Second-Hand-Market</h1>
+		</div>
+	</div>
+
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#myNavbar">
+					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" th:href="@{/}">SHM</a>
+			</div>
+			<div class="collapse navbar-collapse" id="myNavbar">
+				<ul class="nav navbar-nav">
+					<li><a th:href="@{/}">Inicio</a></li>
+					<li sec:authorize="isAuthenticated()"><a
+						th:href="@{/app/misproductos}">Mis Productos</a></li>
+					<li sec:authorize="isAuthenticated()"><a
+						th:href="@{/app/miscompras}">Mis Compras</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li sec:authorize="isAuthenticated()"><a
+						th:href="@{/app/carrito}" class="active"><span
+							class="glyphicon glyphicon-shopping-cart"></span> Carrito</a></li>
+					<li sec:authorize="!isAuthenticated()"><a
+						th:href="@{/auth/login}"><span
+							class="glyphicon glyphicon-user"></span> Login</a></li>
+					<li sec:authorize="isAuthenticated()" class="dropdown"><a
+						href="#" class="dropdown-toggle" data-toggle="dropdown"
+						role="button" aria-haspopup="true" aria-expanded="false"> <span
+							th:text="${#authentication.name}">Menú</span> <span class="caret"></span>
+					</a>
+						<ul class="dropdown-menu">
+							<li><a
+								href="javascript:document.getElementById('logoutForm').submit()">Salir</a>
+							</li>
+						</ul></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<form th:action="@{/auth/logout}" method="POST" id="logoutForm"></form>
+
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-offset-3 col-md-6">
+				<form method="post" enctype="multipart/form-data" action="#"
+					th:action="${producto.id != 0} ? @{/app/producto/editar/submit} : @{/app/producto/nuevo/submit}"
+					th:object="${producto}">
+					<h1
+						th:text="${producto.id != 0} ? 'Editar producto' : 'Nuevo producto'">Nuevo
+						producto</h1>
+					<input type="hidden" id="id" name="id" th:field="*{id}" />
+					<div class="form-group">
+						<label for="nombre">Nombre</label> <input type="text"
+							class="form-control" id="nombre" placeholder="Nombre"
+							th:field="*{nombre}" />
+					</div>
+					<div class="form-group">
+						<label for="precio">Precio</label> <input type="number" step="0.01"
+							class="form-control" id="precio" placeholder="1.00"
+							th:field="*{precio}" />
+
+					</div>
+					<div class="form-group">
+						<label for="file">Imagen</label> <input id="filebutton"
+							name="file" class="form-control input-file" type="file">
+					</div>
+
+					<button type="submit" class="btn btn-default">Enviar</button>
+				</form>
+
+
+			</div>
+		</div>
+	</div>
+	<br>
+	<br>
+
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+		th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+		th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+
+
+
+</body>
+</html>

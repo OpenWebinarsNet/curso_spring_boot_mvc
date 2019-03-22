@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<title>SecondHandMarket</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+<link rel="stylesheet" href="../../../static/css/styles.css"
+	th:href="@{/css/styles.css}">
+
+</head>
+<body>
+
+	<div class="jumbotron">
+		<div class="container text-center">
+			<h1>Second-Hand-Market</h1>
+		</div>
+	</div>
+
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#myNavbar">
+					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" th:href="@{/}">SHM</a>
+			</div>
+			<div class="collapse navbar-collapse" id="myNavbar">
+				<ul class="nav navbar-nav">
+					<li><a th:href="@{/}">Inicio</a></li>
+					<li sec:authorize="isAuthenticated()"><a
+						th:href="@{/app/misproductos}">Mis Productos</a></li>
+					<li sec:authorize="isAuthenticated()"><a
+						th:href="@{/app/miscompras}">Mis Compras</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li sec:authorize="isAuthenticated()"><a
+						th:href="@{/app/carrito}" class="active"><span
+							class="glyphicon glyphicon-shopping-cart"></span> Carrito</a></li>
+					<li sec:authorize="!isAuthenticated()"><a
+						th:href="@{/auth/login}"><span
+							class="glyphicon glyphicon-user"></span> Login</a></li>
+					<li sec:authorize="isAuthenticated()" class="dropdown"><a
+						href="#" class="dropdown-toggle" data-toggle="dropdown"
+						role="button" aria-haspopup="true" aria-expanded="false"> <span
+							th:text="${#authentication.name}">Menú</span> <span class="caret"></span>
+					</a>
+						<ul class="dropdown-menu">
+							<li><a
+								href="javascript:document.getElementById('logoutForm').submit()">Salir</a>
+							</li>
+						</ul></li>
+				</ul>
+				<form class="navbar-form navbar-right">
+					<input type="text" class="form-control" placeholder="Buscar..."
+						name="q" th:value="${param.q}">
+				</form>
+			</div>
+		</div>
+	</nav>
+	<form th:action="@{/auth/logout}" method="POST" id="logoutForm"></form>
+
+
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-offset-3 col-xs-6">
+				<div class="invoice-title">
+					<h2>Factura</h2>
+					<h3 class="pull-right">
+						Compra #<span th:text="${compra.id}">1234</span>
+					</h3>
+				</div>
+				<hr>
+				<div class="row">
+					<div class="col-xs-6">
+						<address>
+							<strong>Comprado por:</strong><br> <span
+								th:text="${compra.propietario.nombre + ' ' + compra.propietario.apellidos}"></span><br>
+							<span th:text="${compra.propietario.email}"></span><br>
+						</address>
+					</div>
+					<div class="col-xs-6 text-right">
+						<address>
+							<strong>Fecha de compra:</strong><br> <span
+								th:text="${#dates.format(compra.fechaCompra,'dd/MMM/yyyy HH:mm')}"></span><br>
+							<br>
+						</address>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-offset-3 col-md-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+							<strong>Listado de productos</strong>
+						</h3>
+					</div>
+					<div class="panel-body invoice-body">
+						<div class="table-responsive">
+							<table class="table table-condensed">
+								<thead>
+									<tr>
+										<td><strong>Producto</strong></td>
+										<td class="text-right"><strong>Precio</strong></td>
+									</tr>
+								</thead>
+								<tbody>									
+									<tr th:each="producto : ${productos}">
+										<td><span th:text="${producto.nombre}">Producto</span></td>
+										<td class="text-right"><span th:text="${#numbers.formatCurrency(producto.precio)}">123€</span></td>
+									</tr>
+									<tr>
+										<td class="thick-line text-right"><strong>Total</strong></td>
+										<td class="thick-line text-right"><span
+											th:text="${#numbers.formatCurrency(total_compra)}"></span></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<br>
+	<br>
+
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+		th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+		th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<title>SecondHandMarket</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+<link rel="stylesheet" href="../../../static/css/styles.css"
+	th:href="@{/css/styles.css}">
+
+</head>
+<body>
+
+	<div class="jumbotron">
+		<div class="container text-center">
+			<h1>Second-Hand-Market</h1>
+		</div>
+	</div>
+
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#myNavbar">
+					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" th:href="@{/}">SHM</a>
+			</div>
+			<div class="collapse navbar-collapse" id="myNavbar">
+				<ul class="nav navbar-nav">
+					<li><a th:href="@{/}">Inicio</a></li>
+					<li sec:authorize="isAuthenticated()"><a
+						th:href="@{/app/misproductos}">Mis Productos</a></li>
+					<li sec:authorize="isAuthenticated()"><a
+						th:href="@{/app/miscompras}">Mis Compras</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li sec:authorize="isAuthenticated()"><a
+						th:href="@{/app/carrito}" class="active"><span
+							class="glyphicon glyphicon-shopping-cart"></span> Carrito</a></li>
+					<li sec:authorize="!isAuthenticated()"><a
+						th:href="@{/auth/login}"><span
+							class="glyphicon glyphicon-user"></span> Login</a></li>
+					<li sec:authorize="isAuthenticated()" class="dropdown"><a
+						href="#" class="dropdown-toggle" data-toggle="dropdown"
+						role="button" aria-haspopup="true" aria-expanded="false"> <span
+							th:text="${#authentication.name}">Menú</span> <span class="caret"></span>
+					</a>
+						<ul class="dropdown-menu">
+							<li><a
+								href="javascript:document.getElementById('logoutForm').submit()">Salir</a>
+							</li>
+						</ul></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<form th:action="@{/auth/logout}" method="POST" id="logoutForm"></form>
+
+
+	<div class="container">
+		<div class="row" th:if="${carrito == null}">
+			<div class="col-md-offset-1 col-md-10">
+				<div class="jumbotron">
+					<div class="container">
+						<h2 class="text-center">Aún no ha seleccionado ningún producto para comprar</h2>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row" th:unless="${carrito == null}">
+			<div class="col-sm-12 col-md-10 col-md-offset-1">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>Product</th>
+							<th class="text-center">Total</th>
+							<th> </th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="producto : ${carrito}">
+							<td class="col-md-10">
+								<div class="media">
+									<img
+										class="thumbnail pull-left media-object"
+										th:src="${#strings.isEmpty(producto.imagen)} ? 'https://placehold.it/150x150?text=SIN%20IMAGEN' : ${producto.imagen}"
+										style="width: 150px;">									
+									<div class="media-body">
+										<h4 class="media-heading">&nbsp;
+											<span th:text="${producto.nombre}">Nombre del producto</span>
+										</h4>
+										<h5 class="media-heading">&nbsp;
+											by <span th:text="${producto.propietario.email}">pepe@pepe.com</span>
+										</h5>
+										
+									</div>
+								</div>
+							</td>
+
+							<td class="col-md-1 text-center"><strong th:text="${#numbers.formatCurrency(producto.precio)}"></strong></td>
+							<td class="col-md-1">
+								<a th:href="@{/app/carrito/eliminar/{id}(id=${producto.id})}" class="btn btn-danger">
+									<span class="glyphicon glyphicon-remove"></span> Eliminar
+								</a>
+							</td>
+						</tr>
+						
+						
+						<tr>
+							<td> </td>
+							<td><h3>Total</h3></td>
+							<td class="text-right"><h3>
+									<strong th:text="${#numbers.formatCurrency(total_carrito)}">$31.53</strong>
+								</h3></td>
+						</tr>
+						<tr>
+							<td> </td>
+							<td>
+								<a th:href="@{/public/}" class="btn btn-default">
+									<span class="glyphicon glyphicon-shopping-cart"></span>
+									Continuar comprando
+								</a>
+							</td>
+							<td>
+								<a th:href="@{/app/carrito/finalizar}" class="btn btn-success">
+									Finalizar compra <span class="glyphicon glyphicon-play"></span>
+								</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<br>
+	<br>
+
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+		th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+		th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+
+
+
+</body>
+</html>

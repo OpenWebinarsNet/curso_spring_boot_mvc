@@ -1,0 +1,4 @@
+2018-11-24 10:22:28 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Error de Sintaxis en sentencia SQL "SELECT * FROM EMPLEADO WHERE LOWER(NOMBRE) LIKE CONCAT('%',?,'%') OR LOWER(EMAIL) CONCAT[*]('%',?,'%') OR LOWER(TELEFONO) LIKE CONCAT('%',?,'%')"
+Syntax error in SQL statement "SELECT * FROM EMPLEADO WHERE LOWER(NOMBRE) LIKE CONCAT('%',?,'%') OR LOWER(EMAIL) CONCAT[*]('%',?,'%') OR LOWER(TELEFONO) LIKE CONCAT('%',?,'%')"; SQL statement:
+SELECT * FROM EMPLEADO WHERE LOWER(NOMBRE) LIKE CONCAT('%',?,'%') OR LOWER(EMAIL) CONCAT('%',?,'%') OR LOWER(TELEFONO) LIKE CONCAT('%',?,'%') [42000-197]

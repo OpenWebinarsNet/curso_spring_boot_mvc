@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<title>SecondHandMarket</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+<link rel="stylesheet" href="../../../static/css/styles.css"
+	th:href="@{/css/styles.css}">
+
+</head>
+<body>
+
+	<div class="jumbotron">
+		<div class="container text-center">
+			<h1>Second-Hand-Market</h1>
+		</div>
+	</div>
+
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#myNavbar">
+					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" th:href="@{/}">SHM</a>
+			</div>
+			<div class="collapse navbar-collapse" id="myNavbar">
+				<ul class="nav navbar-nav">
+					<li><a th:href="@{/}">Inicio</a></li>
+					<li class="active" sec:authorize="isAuthenticated()"><a
+						th:href="@{/app/misproductos}">Mis Productos</a></li>
+					<li sec:authorize="isAuthenticated()"><a
+						th:href="@{/app/miscompras}">Mis Compras</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li sec:authorize="isAuthenticated()"><a
+						th:href="@{/app/carrito}"><span
+							class="glyphicon glyphicon-shopping-cart"></span> Carrito</a></li>
+					<li sec:authorize="!isAuthenticated()"><a
+						th:href="@{/auth/login}"><span
+							class="glyphicon glyphicon-user"></span> Login</a></li>
+					<li sec:authorize="isAuthenticated()" class="dropdown"><a
+						href="#" class="dropdown-toggle" data-toggle="dropdown"
+						role="button" aria-haspopup="true" aria-expanded="false"> <span
+							th:text="${#authentication.name}">Menú</span> <span class="caret"></span>
+					</a>
+						<ul class="dropdown-menu">
+							<li><a
+								href="javascript:document.getElementById('logoutForm').submit()">Salir</a>
+							</li>
+						</ul></li>
+				</ul>
+				<form class="navbar-form navbar-right">
+					<input type="text" class="form-control" placeholder="Buscar..."
+						name="q" th:value="${param.q}">
+				</form>
+			</div>
+		</div>
+	</nav>
+	<form th:action="@{/auth/logout}" method="POST" id="logoutForm"></form>
+
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-offset-10 col-md-2" style="margin-bottom: 20px;">
+				<a th:href="@{/app/producto/nuevo}" class="btn btn-lg btn-info">Nuevo producto</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-4" th:each="producto : ${misproductos}">
+
+				<div class="panel panel-default panel-producto">
+					<div class="panel-heading">
+						<span th:text="${producto.nombre}">NOMBRE DEL PRODUCTO</span> <a
+							th:if="${producto.compra == null}" data-toggle="modal"
+							data-target="#delete-modal" th:data-id="${producto.id}"
+							class="close" aria-label="close">&times;</a>
+					</div>
+					<div class="panel-body">
+						<img
+							th:src="${#strings.isEmpty(producto.imagen)} ? 'http://placehold.it/350x260' : ${producto.imagen}"
+							class="img-responsive center-block" alt="Image"
+							style="height: 300px;">
+					</div>
+					<div class="panel-footer">
+						<div class="row">
+							<div class="col-md-9 precio">
+								<span class="precio"
+									th:text="${#numbers.formatCurrency(producto.precio)}"></span>
+							</div>
+							<div class="col-md-3">
+
+								<h4>
+									<span th:if="${producto.compra != null} "
+										class="label label-success">Vendido</span> <span
+										th:unless="${producto.compra != null} "
+										class="label label-info">Sin vender</span>
+								</h4>
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<br>
+	<br>
+
+	<!-- 							 
+ -->
+	<div class="modal fade" id="delete-modal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">Borrar producto</h4>
+				</div>
+				<div class="modal-body">
+					<p>¿Está usted seguro de borrar este producto?</p>
+					<button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+					<a href="#" class="btn btn-danger">Sí</a>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+		th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+		th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#delete-modal').on('show.bs.modal', function(event) {
+				var button = $(event.relatedTarget);
+				var data = button.data('id');
+
+				var modal = $(this);
+
+				var a = modal.find('.modal-body a')[0];
+				a.href = '/app/misproductos/' + data + '/eliminar';
+				
+
+			});
+		});
+	</script>
+
+
+
+</body>
+</html>
